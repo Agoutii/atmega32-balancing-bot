@@ -12,6 +12,32 @@
 // Number of characters to accept on one line
 #define LBUFSIZE 32
 
+extern volatile circBuffer *txBuffP, *rxBuffP;
+
+ISR(USART_RXC_vect)			// USART RX interrupt
+{
+	if(!char_queue(UDR, rxBuffP))
+	{ //Oh noes, receive buffer full... we broke it :(
+		printf_P(PSTR("Zee buffer, it does nahsink"));
+	}
+		
+}
+
+ISR(USART_UDRE_vect) // USART transmit buffer empty interrupt
+{
+	if (char_avail(txBuffP))
+	{
+		// If we have a char waiting, send it on it's merry way.
+		UDR = char_dequeue(txBuffP);
+	}
+	else
+	{
+		// Otherwise disable interrupt so we don't immediately retrigger forever (and where's the fun in that?)
+		UCSRB &= ~(1 << UDRIE);
+	}
+}
+
+
 
 int main(void)
 {
