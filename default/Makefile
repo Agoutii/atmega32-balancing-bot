@@ -15,7 +15,7 @@ COMMON = -mmcu=$(MCU)
 
 ## Compile options common for all C compilation units.
 CFLAGS = $(COMMON)
-CFLAGS += -Wall -gdwarf-2 -std=gnu99         -DF_CPU=14745600UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -gdwarf-2 -std=gnu99                   -DF_CPU=14745600UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d 
 
 ## Assembly specific flags
@@ -25,7 +25,7 @@ ASMFLAGS += -x assembler-with-cpp -Wa,-gdwarf2
 
 ## Linker flags
 LDFLAGS = $(COMMON)
-LDFLAGS +=  -Wl,-Map=Main.map
+LDFLAGS += -Wl,-u,vfprintf -Wl,-Map=Main.map
 
 
 ## Intel Hex file production flags
@@ -37,10 +37,10 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Libraries
-LIBS = -lc 
+LIBS = -lprintf_flt -lm 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o uart.o adc.o 
+OBJECTS = main.o uart.o adc.o kalman.o circBuffer.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -56,6 +56,12 @@ uart.o: ../uart.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 adc.o: ../adc.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+kalman.o: ../kalman.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+circBuffer.o: ../circBuffer.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

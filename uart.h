@@ -1,15 +1,17 @@
 #ifndef UART_H
 #define UART_H
 
-#include <avr/io.h>
 #include <stdio.h>
-#include <ctype.h> 
-#include <avr/interrupt.h>
+#include <stdlib.h>
 #include <string.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h> 
 #include "circBuffer.h"
 
 
-#define UART_BAUD_RATE 38400
+
+#define UART_BAUD_RATE 115200
 
 //#define UART_DOUBLESPEED
 

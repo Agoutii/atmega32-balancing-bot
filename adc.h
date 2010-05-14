@@ -1,13 +1,17 @@
 #ifndef ADC_INIT
 #define ADC_INIT
 
-#include <avr/io.h>
 #include <stdio.h>
-#include <ctype.h> 
+#include <stdlib.h>
+#include <string.h>
+#include <avr/io.h>
+#include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h> 
 #include <math.h>
 
 void adc_init(void);
 void adc_start(void);
-char adc_fetch(char adc_chan);
+int adc_fetch(int adc_chan);
+void adc_print(void);
 #endif
