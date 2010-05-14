@@ -97,3 +97,5 @@ void uart_init(void)
 	// Redirect stdout, so that printf() knows where to go
 	stdout = &uart_str;
 }
+
+	
