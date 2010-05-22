@@ -4,7 +4,9 @@
 #include "uart.h"
 #include "adc.h"
 
+void setVar(char *str, char *subStr);
+double getVar(char *str);
 
-void kalmanDo();
-void kalman_print();
+void doKalman(void);
+void kalman_print(void);
 #endif

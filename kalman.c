@@ -1,12 +1,61 @@
 #include "kalman.h"
 const double T = 1.0/112.5;
 double y_angle, y_gyro;
-double R_angle = 100.0, R_gyro = 0.0001;
-double x_angle = 0, x_rate = 0, x_bias = 0;
-double Q_angle = 0.001, Q_rate = 0.005, Q_bias = 0.001;
+double R_angle = 1.0, R_gyro = 0.0001;
+double x_angle = 0, x_rate = 0, x_bias = -11;
+double Q_angle = 0.001, Q_rate = 0.005, Q_bias = 0.0001;
 double P[3][3] = {{1,0,0},{0,1,0},{0,0,1}};
 double K[3];
 double y_err, K_denom;
+
+void setVar(char *str, char *subStr)
+{
+	if(!strncmp_P(str,PSTR("q_bias"),6))
+	{
+		Q_bias=atof(subStr+1);
+	}
+	else if(!strncmp_P(str,PSTR("q_rate"),6))
+	{
+		Q_rate=atof(subStr+1);
+	}
+	else if(!strncmp_P(str,PSTR("q_angle"),7))
+	{
+		Q_angle=atof(subStr+1);
+	}
+	else if(!strncmp_P(str,PSTR("r_angle"),7))
+	{
+		R_angle=atof(subStr+1);
+	}
+	else if(!strncmp_P(str,PSTR("r_gyro"),6))
+	{
+		R_gyro=atof(subStr+1);
+	}
+}
+
+double  getVar(char *str)
+{
+	if(!strncmp_P(str,PSTR("q_bias"),6))
+	{
+		return Q_bias;
+	}
+	else if(!strncmp_P(str,PSTR("q_rate"),6))
+	{
+		return Q_rate;
+	}
+	else if(!strncmp_P(str,PSTR("q_angle"),7))
+	{
+		return Q_angle;
+	}
+	else if(!strncmp_P(str,PSTR("r_angle"),7))
+	{
+		return R_angle;
+	}
+	else if(!strncmp_P(str,PSTR("r_gyro"),6))
+	{
+		return R_gyro;
+	}
+	return 0;
+}
 
 void doKalman(void)
 {
@@ -17,7 +66,7 @@ void doKalman(void)
 	y_gyro = -3300.0*3.14159265359/(2.0*1024.0*180.0)*(double)(gyro_data);
 	//xt = 9.81*10.0/1024.0*(double)(acc_Z - 0x1FF);
 	//yt = 9.81*10.0/1024.0*(double)(acc_Y - 0x1FF);
-	y_angle = atan2((double)(acc_z - 0x1FF),-(double)(acc_y - 0x1FF));
+	y_angle = atan2((double)(acc_z - 540),-(double)(511-acc_y));
 	/*
 	* Sequential Kalman Filter
 	*/
@@ -81,5 +130,5 @@ void doKalman(void)
 
 void kalman_print(void)
 {
-	printf_P(PSTR("x_ang:%G,x_rate:%f,x_bias:%G,y_ang:%G,y_gyro:%G\n\r"),x_angle,x_rate,x_bias,y_angle,y_gyro);
+	printf_P(PSTR("%G,%G,%G,%G,%G\n"),x_angle,x_rate,x_bias,y_angle,y_gyro);
 }

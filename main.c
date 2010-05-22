@@ -17,7 +17,7 @@
 extern volatile circBuffer *txBuffP, *rxBuffP;
 volatile unsigned char kalmanTick;
 volatile unsigned char kalmanTimer;
-volatile unsigned char dispTimer;
+volatile unsigned int dispTimer=1;
 
 
 ISR(TIMER0_OVF_vect)
@@ -25,11 +25,22 @@ ISR(TIMER0_OVF_vect)
 	if(++kalmanTimer==0) // 28.8/256 = 112.5 Hz. Doesn't set at first cycle.
 	{
 		kalmanTick++;
-		if(++dispTimer>12)
+		if(dispTimer>0)
 		{
-			dispTimer=0;
-			kalman_print();
+			if(++dispTimer>1000)
+			{
+				dispTimer=0;
+			}
+			else
+			{
+				kalman_print();
+			}
+
+			
 			//adc_print();
+		}
+		else if(dispTimer>0)
+		{
 		}
 	}
 
@@ -56,7 +67,6 @@ void init(void)
 }
 int main(void)
 {
-	int x = 0;
 	char c;
 	unsigned int bufCount = 0;
 	char linebuf[LBUFSIZE]; //Our normal fill & clear buffer for commands
@@ -66,7 +76,7 @@ int main(void)
 	uart_init(); 	// init USART
 	adc_init();
 	sei();  		// enable interrupts
-
+ 	printf_P(PSTR("x_angle,x_rate,x_bias,y_angle,y_rate\n"));
 	// Wait a second at startup 
 	adc_start();
 
@@ -109,19 +119,24 @@ int main(void)
 			{ 
 				if(bufCount>1)
 				{
+					char *subStr;
 					linebuf[bufCount-1] = '\0';		// terminate the string. Arnie, enter stage left.
 					if (!strncmp_P(linebuf,PSTR("help"),4))
 					{
 						printf_P(PSTR("Mwahahahaha.... not even the gods can help you now >:D\n\r"));
 					}
-					else if (!strncmp_P(linebuf,PSTR("x="),2))
+					if (!strncmp_P(linebuf,PSTR("print"),4))
 					{
-						x = atof(&linebuf[2]);
-						printf_P(PSTR("x set to %i\n\r"),x);
+						printf_P(PSTR("x_angle,x_rate,x_bias,y_angle,y_rate\n"));
+						dispTimer=1;
 					}
-					else if (!strncmp_P(linebuf,PSTR("x?"),2))
+					if ((subStr=strstr_P(linebuf,PSTR("="))))
 					{
-						printf_P(PSTR("x is %i\n\r"),x);
+						setVar(linebuf,subStr);
+					}
+					else if ((strstr_P(linebuf,PSTR("?"))))
+					{
+						printf_P(PSTR("%G\n"),getVar(linebuf));
 					}
 					else
 					{
