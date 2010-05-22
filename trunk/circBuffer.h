@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <ctype.h> 
 #ifndef BUFSIZE
-  #define BUFSIZE 80
+  #define BUFSIZE 90
 #endif
 typedef struct
 {
