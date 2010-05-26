@@ -1,12 +1,13 @@
 #include "kalman.h"
 const double T = 1.0/112.5;
-double y_angle, y_gyro;
-double R_angle = 1.0, R_gyro = 0.0001;
+double y_angle, y_gyro; 
+double R_angle = 1.0, R_gyro = 0.0005;
 double x_angle = 0, x_rate = 0, x_bias = -11;
 double Q_angle = 0.001, Q_rate = 0.005, Q_bias = 0.0001;
 double P[3][3] = {{1,0,0},{0,1,0},{0,0,1}};
 double K[3];
 double y_err, K_denom;
+
 
 void setVar(char *str, char *subStr)
 {
