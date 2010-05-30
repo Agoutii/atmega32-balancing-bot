@@ -1,6 +1,15 @@
 #ifndef PID_H
 #define PID_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h> 
+#include <math.h>
 
+#include "kalman.h"
 typedef struct
 {
 	double iMax, iMin;		// Maximum and minimum allowable integrator state
@@ -13,5 +22,4 @@ typedef struct
 } PID_T;
 
 double UpdatePID(PID_T *pid, double error);
-
 #endif
