@@ -1,0 +1,1 @@
+The project is a 2 wheeled balancing bot, in a segway style (actual dimensions .5m high .25m wide by .1m thick) using 2 GM8712 gearbox motors and a Sparkfun 6 DOF IMU. Coms is via a MAX232 powered serial connection.
